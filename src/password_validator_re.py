@@ -14,19 +14,15 @@ os.makedirs("out", exist_ok=True)
 def is_valid(password):
     razones = []
 
-    # Regla 1: longitud >= 8
     if len(password) < 8:
         razones.append("longitud insuficiente")
 
-    # Regla 2: al menos una mayúscula
     if not re.search(r'[A-Z]', password):
         razones.append("no tiene mayúscula")
 
-    # Regla 3: al menos un dígito
     if not re.search(r'[0-9]', password):
         razones.append("no tiene dígito")
 
-    # Regla 4: solo letras y números
     if re.search(r'[^a-zA-Z0-9]', password):
         razones.append("tiene caracteres inválidos")
 
@@ -42,4 +38,33 @@ razones_conteo = {
     "longitud insuficiente": 0,
     "no tiene mayúscula": 0,
     "no tiene dígito": 0,
-    "tien
+    "tiene caracteres inválidos": 0
+}
+
+for password in passwords:
+    valida, razones = is_valid(password)
+    if valida:
+        validas.append(password)
+    else:
+        invalidas.append(password)
+        for razon in razones:
+            razones_conteo[razon] += 1
+
+# ── 4. Guardar resultados ────────────────────────────────────────
+with open(VALIDAS, "w", encoding="utf-8") as f:
+    f.write("\n".join(validas))
+
+with open(INVALIDAS, "w", encoding="utf-8") as f:
+    f.write("\n".join(invalidas))
+
+# ── 5. Mostrar resultados ────────────────────────────────────────
+print("===== Validador de contraseñas =====")
+print(f"Total válidas  : {len(validas)}")
+print(f"Total inválidas: {len(invalidas)}")
+print("")
+print("-- Razones de rechazo --")
+for razon, conteo in razones_conteo.items():
+    print(f"{razon:30}: {conteo}")
+print("")
+print(f"✅ Válidas guardadas en  : {VALIDAS}")
+print(f"✅ Inválidas guardadas en: {INVALIDAS}")
