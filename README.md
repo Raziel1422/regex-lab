@@ -1,11 +1,14 @@
-# regex-lab
+#regex-lag
 
 Práctica de expresiones regulares aplicadas en Bash y Python.  
-Materia: Teoría Matemática de la Computación
+Materia: Teoría Matemática de la Computación  
+Docente: Dr. José Luis Quiroz Fabián
 
 ---
 
-## Estructura del repositorio
+# Estructura del repositorio
+
+De acuerdo con los requerimientos obligatorios:
 ```
 regex-lab/
 ├── README.md
@@ -22,89 +25,66 @@ regex-lab/
 
 ---
 
-## Requisitos
+#Requisitos
 
-- Bash (Linux/Mac o WSL en Windows)
-- Python 3.x
+- Bash (Linux, macOS o WSL)
+- Python 3.x (Módulo `re` incluido)
 
 ---
 
-## Cómo ejecutar cada script
+#Cómo ejecutar cada script
 
-> ⚠️ Todos los scripts deben ejecutarse desde la **raíz** del repositorio.
+Importante: Todos los scripts deben ejecutarse desde la raíz del repositorio. La carpeta `out/` se generará automáticamente si no existe.
 
-### 1. Analizador de logs — Bash
+#1. Analizador de logs (Bash y Python)
+
+Extraen líneas válidas y generan un reporte basado en el nivel especificado (INFO, WARN, ERROR, DEBUG).
 ```bash
 bash src/log_reporter_grep.sh INFO
-bash src/log_reporter_grep.sh WARN
 bash src/log_reporter_grep.sh ERROR
-bash src/log_reporter_grep.sh DEBUG
+python3 src/log_reporter_re.py INFO
+python3 src/log_reporter_re.py ERROR
 ```
 
 **Salida:**
-- `out/info_validos.txt` (o warn, error, debug según el nivel)
-- `out/reporte_log.json`
+- `out/xxxx_validos.txt`: Líneas filtradas con formato correcto.
+- `out/reporte_log.json`: Estadísticas del análisis en formato JSON.
 
 ---
 
-### 2. Analizador de logs — Python
-```bash
-python src/log_reporter_re.py INFO
-python src/log_reporter_re.py ERROR
-```
+#2. Validador de contraseñas (Bash y Python)
 
-**Salida:**
-- `out/info_validos.txt` (o warn, error, debug según el nivel)
-- `out/reporte_log.json`
-
----
-
-### 3. Validador de contraseñas — Bash
+Clasifican las contraseñas del archivo de entrada según las reglas de seguridad definidas.
 ```bash
 bash src/password_validator_grep.sh
+python3 src/password_validator_re.py
 ```
 
 **Salida:**
-- `out/validas.txt`
-- `out/invalidas.txt`
+- `out/validas.txt`: Contraseñas que cumplen todos los criterios.
+- `out/invalidas.txt`: Contraseñas rechazadas con su respectiva razón de rechazo.
 
 ---
 
-### 4. Validador de contraseñas — Python
-```bash
-python src/password_validator_re.py
-```
+#Reglas de validación aplicadas
 
-**Salida:**
-- `out/validas.txt`
-- `out/invalidas.txt`
+# Logs de sistema
+- Formato: `[NIVEL] AAAA-MM-DD HH:MM:SS Mensaje`
+- Niveles: `INFO`, `WARN`, `ERROR`, `DEBUG`
+- Mensaje: Debe contener al menos un carácter.
 
----
-
-## Reglas de validación
-
-### Logs
-Una línea es válida si cumple el formato:
-```
-[NIVEL] AAAA-MM-DD HH:MM:SS Mensaje
-```
-Donde NIVEL puede ser: `INFO`, `WARN`, `ERROR` o `DEBUG`
-
-### Contraseñas
-Una contraseña es válida si:
-- Tiene 8 o más caracteres
-- Contiene al menos una letra mayúscula
-- Contiene al menos un dígito
-- Solo contiene letras y números
+# Contraseñas
+- Longitud mínima de 8 caracteres.
+- Al menos una letra mayúscula.
+- Al menos un dígito numérico.
+- Restricción: Solo se permiten letras y números (alfanumérico).
 
 ---
 
-## Reflexión final
+# Reflexión final
 
 **¿Por qué conviene validar datos tanto en frontend como en backend?**  
-Validar solo en frontend es inseguro porque cualquier usuario puede saltarse esas validaciones manipulando el código del navegador. El backend es la última línea de defensa y garantiza que los datos sean correctos sin importar cómo llegaron.
+La validación en el frontend mejora la experiencia del usuario al dar feedback instantáneo y ahorra recursos al evitar peticiones innecesarias. Sin embargo, la validación en el backend es indispensable para la seguridad, ya que las capas de cliente pueden ser manipuladas o ignoradas por atacantes; el backend es el único que garantiza la integridad final de los datos almacenados.
 
 **¿Qué limitaciones tienen las expresiones regulares en sistemas reales?**  
-Las expresiones regulares no pueden validar contexto ni semántica. Por ejemplo, pueden verificar que una fecha tenga el formato correcto pero no que sea una fecha real (como 30 de febrero). Además, regex muy complejas son difíciles de mantener y pueden tener problemas de rendimiento con textos muy largos.
-
----
+Las expresiones regulares están limitadas a lenguajes regulares dentro de la Jerarquía de Chomsky. No pueden procesar estructuras anidadas o recursivas (como HTML o JSON balanceado) ni validar lógica semántica avanzada, como comprobar si una fecha es válida cronológicamente (ej. evitar un 30 de febrero). Además, diseños ineficientes pueden causar problemas de rendimiento por retroceso catastrófico (backtracking).(backtracking).

@@ -1,0 +1,5 @@
+[ERROR] 2024-03-15 08:10:22 Conexión fallida al servidor de base de datos
+[ERROR] 2024-03-15 08:20:05 Timeout al conectar con el servicio externo
+[ERROR] 2024-03-15 09:05:55 Archivo de configuración no encontrado
+[ERROR] 2024-03-15 09:25:47 Permiso denegado al escribir en /var/log/app.log
+[ERROR] 2024-03-15 10:10:00 Error crítico en el módulo de pagos

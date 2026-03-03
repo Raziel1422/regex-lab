@@ -1,70 +1,49 @@
 import re
-import sys
 import os
 
-# ── 1. Definir rutas ─────────────────────────────────────────────
-ARCHIVO = "data/passwords_muestra.txt"
-VALIDAS = "out/validas.txt"
-INVALIDAS = "out/invalidas.txt"
-
-# Crear carpeta out/ si no existe
-os.makedirs("out", exist_ok=True)
-
-# ── 2. Función principal de validación ──────────────────────────
 def is_valid(password):
-    razones = []
-
+    reasons = []
     if len(password) < 8:
-        razones.append("longitud insuficiente")
-
+        reasons.append("longitud insuficiente")
     if not re.search(r'[A-Z]', password):
-        razones.append("no tiene mayúscula")
-
-    if not re.search(r'[0-9]', password):
-        razones.append("no tiene dígito")
-
+        reasons.append("no tiene mayúscula")
+    if not re.search(r'\d', password):
+        reasons.append("no tiene dígito")
     if re.search(r'[^a-zA-Z0-9]', password):
-        razones.append("tiene caracteres inválidos")
+        reasons.append("tiene caracteres inválidos")
+    
+    return len(reasons) == 0, reasons
 
-    return len(razones) == 0, razones
+def main():
+    input_path = "data/passwords_muestra.txt"
+    out_dir = "out"
+    os.makedirs(out_dir, exist_ok=True)
+    
+    valid_list = []
+    invalid_list = []
 
-# ── 3. Leer archivo y clasificar ────────────────────────────────
-with open(ARCHIVO, "r", encoding="utf-8") as f:
-    passwords = [l.strip() for l in f.readlines() if l.strip() != ""]
+    if not os.path.exists(input_path):
+        return
 
-validas = []
-invalidas = []
-razones_conteo = {
-    "longitud insuficiente": 0,
-    "no tiene mayúscula": 0,
-    "no tiene dígito": 0,
-    "tiene caracteres inválidos": 0
-}
+    with open(input_path, 'r') as f:
+        passwords = f.read().splitlines()
 
-for password in passwords:
-    valida, razones = is_valid(password)
-    if valida:
-        validas.append(password)
-    else:
-        invalidas.append(password)
-        for razon in razones:
-            razones_conteo[razon] += 1
+    for p in passwords:
+        valid, reasons = is_valid(p)
+        if valid:
+            valid_list.append(p)
+        else:
+            invalid_list.append(f"{p} (Razones: {', '.join(reasons)})")
+            print(f"Password: {p} RECHAZADA: {reasons}")
 
-# ── 4. Guardar resultados ────────────────────────────────────────
-with open(VALIDAS, "w", encoding="utf-8") as f:
-    f.write("\n".join(validas))
+    with open(f"{out_dir}/validas.txt", "w") as f:
+        f.write("\n".join(valid_list))
+    
+    with open(f"{out_dir}/invalidas.txt", "w") as f:
+        f.write("\n".join(invalid_list))
 
-with open(INVALIDAS, "w", encoding="utf-8") as f:
-    f.write("\n".join(invalidas))
+    print(f"\nTotal Válidas: {len(valid_list)}")
+    print(f"Total Inválidas: {len(invalid_list)}")
 
-# ── 5. Mostrar resultados ────────────────────────────────────────
-print("===== Validador de contraseñas =====")
-print(f"Total válidas  : {len(validas)}")
-print(f"Total inválidas: {len(invalidas)}")
-print("")
-print("-- Razones de rechazo --")
-for razon, conteo in razones_conteo.items():
-    print(f"{razon:30}: {conteo}")
-print("")
-print(f"✅ Válidas guardadas en  : {VALIDAS}")
-print(f"✅ Inválidas guardadas en: {INVALIDAS}")
+if __name__ == "__main__":
+    main()
